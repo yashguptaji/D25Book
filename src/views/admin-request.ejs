@@ -1,0 +1,44 @@
+<%- include('partials/header', { title: 'Request Review' }) %>
+
+<section class="card narrow">
+  <h1>Access Request Review</h1>
+  <p class="muted">Review applicant details before accepting or rejecting.</p>
+
+  <div class="profile-preview">
+    <img
+      src="<%= request.picture_url || '/default-avatar.svg' %>"
+      alt="Applicant"
+      class="avatar-lg"
+      loading="lazy"
+      onerror="this.onerror=null;this.src='/default-avatar.svg';"
+    />
+    <div>
+      <strong><%= request.display_name %></strong>
+      <p class="muted"><%= request.email %></p>
+      <p class="muted">Google ID: <%= request.google_id || 'N/A' %></p>
+      <p class="muted">Requested: <%= new Date(request.requested_at).toLocaleString() %></p>
+      <p class="muted">Status: <%= request.status %></p>
+      <% if (request.reviewed_at) { %>
+        <p class="muted">Reviewed: <%= new Date(request.reviewed_at).toLocaleString() %></p>
+      <% } %>
+      <% if (existingUser) { %>
+        <p class="muted">Already exists in users table.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="inline-actions">
+    <% if (request.status === 'pending') { %>
+      <form action="/admin/requests/<%= request.id %>/approve" method="POST" class="inline-form">
+        <button type="submit" class="primary-btn">Accept Request</button>
+      </form>
+      <form action="/admin/requests/<%= request.id %>/reject" method="POST" class="inline-form">
+        <button type="submit" class="danger-btn">Reject Request</button>
+      </form>
+    <% } else { %>
+      <a href="/admin" class="secondary-btn">Back to Admin</a>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

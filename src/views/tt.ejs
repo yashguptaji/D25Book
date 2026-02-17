@@ -1,0 +1,30 @@
+<%- include('partials/header', { title: 'TT Clash' }) %>
+
+<section class="card">
+  <h1>TT Clash</h1>
+  <p class="muted">Press <strong>Space</strong> or <strong>Arrow Up</strong> to hop the TT ball past rackets.</p>
+  <div class="dino-layout">
+    <div class="game-panel">
+      <canvas id="dinoCanvas" width="900" height="280" aria-label="TT game canvas" data-my-best="<%= myBest %>"></canvas>
+      <div class="game-meta">
+        <span>Score: <strong id="scoreNow">0</strong></span>
+        <span>Your Best: <strong id="scoreBest">0</strong></span>
+      </div>
+    </div>
+
+    <aside class="leaderboard-panel">
+      <h2>Global Leaderboard</h2>
+      <ol id="leaderboardList" class="leaderboard-list">
+        <% leaderboard.forEach((row) => { %>
+          <li>
+            <span><%= row.alias || row.display_name %></span>
+            <strong><%= row.best_score %></strong>
+          </li>
+        <% }) %>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<script src="/dino.js"></script>
+<%- include('partials/footer') %>

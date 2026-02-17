@@ -1,0 +1,96 @@
+<%- include('partials/header', { title: 'Profile' }) %>
+
+<section class="profile-view-layout">
+  <div class="profile-main">
+    <section class="card">
+      <div class="profile-hero">
+        <a href="/profile/<%= user.share_code %>" class="avatar-link" title="Open public profile">
+          <img
+            src="<%= avatarUrl %>"
+            alt="Profile"
+            class="avatar-lg"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='/default-avatar.svg';"
+          />
+        </a>
+        <div>
+          <h1><%= displayName %></h1>
+          <% if (user.alias) { %>
+            <p class="alias-chip"><%= user.alias %> aka <%= user.display_name %></p>
+          <% } %>
+          <p class="muted"><%= user.email %></p>
+          <% if (user.bio) { %>
+            <p class="bio-card">"<%= user.bio %>"</p>
+          <% } %>
+          <p class="muted">TT High Score: <strong><%= ttHighScore %></strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Edit Profile</h2>
+      <p class="muted">Update your alias, short bio and display picture.</p>
+
+      <form action="/profile" method="POST" class="stack-form">
+        <label for="alias">Alias</label>
+        <input id="alias" name="alias" maxlength="60" placeholder="Dorm nickname" value="<%= user.alias || '' %>" />
+
+        <label for="bio">Brief Bio</label>
+        <textarea id="bio" name="bio" rows="4" maxlength="500" placeholder="A short line about yourself"><%= user.bio || '' %></textarea>
+
+        <label for="profile_image">Profile Picture</label>
+        <input id="profile_image" name="profile_image" type="file" accept="image/*" />
+        <input id="croppedImageData" type="hidden" name="cropped_image_data" />
+        <small class="muted">Choose image, crop square, then save.</small>
+
+        <button type="submit" class="primary-btn">Save Profile</button>
+      </form>
+    </section>
+  </div>
+
+  <aside class="profile-side">
+    <section class="card side-card">
+      <h3>D25 Snapshot</h3>
+      <div class="stats-grid">
+        <article class="metric"><span>TT High Score</span><strong><%= ttHighScore %></strong></article>
+        <article class="metric"><span>Profile Alias</span><strong><%= user.alias || 'Not set' %></strong></article>
+        <article class="metric"><span>Bio</span><strong><%= user.bio || 'No bio yet' %></strong></article>
+      </div>
+    </section>
+
+    <section class="card side-card">
+      <h3>Share Profile</h3>
+      <p class="muted">Share your write-page link and public profile.</p>
+      <div class="share-block">
+        <div>
+          <p class="label">Write Link</p>
+          <a href="<%= shareWriteUrl %>" class="share-url"><%= shareWriteUrl %></a>
+          <p class="label" style="margin-top:0.6rem;">Public Profile</p>
+          <a href="<%= publicProfileUrl %>" class="share-url"><%= publicProfileUrl %></a>
+        </div>
+        <img src="/qr/<%= currentUser.share_code %>" alt="QR Code" class="qr" />
+      </div>
+      <div class="inline-actions" style="margin-top:0.8rem;">
+        <a href="/profile/<%= user.share_code %>" class="secondary-btn">Open My Public Page</a>
+        <a href="/profile/showcase" class="primary-btn">Play Scrapbook Showcase</a>
+      </div>
+    </section>
+  </aside>
+</section>
+
+<dialog id="cropDialog" class="crop-dialog">
+  <div class="crop-wrap">
+    <h3>Crop Profile Picture</h3>
+    <canvas id="cropCanvas" width="360" height="360"></canvas>
+    <label for="cropZoom">Zoom</label>
+    <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" />
+    <div class="crop-actions">
+      <button id="cropCancel" type="button" class="secondary-btn">Cancel</button>
+      <button id="cropSave" type="button" class="primary-btn">Use Cropped Image</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="/profile.js"></script>
+<%- include('partials/footer') %>

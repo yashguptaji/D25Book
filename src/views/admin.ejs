@@ -1,0 +1,96 @@
+<%- include('partials/header', { title: 'Admin Dashboard' }) %>
+
+<section class="card">
+  <div class="admin-head">
+    <h1>Admin Dashboard</h1>
+    <form action="/admin/logout" method="POST" class="inline-form">
+      <button type="submit" class="danger-btn">Admin Logout</button>
+    </form>
+  </div>
+
+  <div class="stats-grid">
+    <article class="metric"><span>Total Users</span><strong><%= metrics.total_users %></strong></article>
+    <article class="metric"><span>Allowlisted Emails</span><strong><%= metrics.total_allowed_emails %></strong></article>
+    <article class="metric"><span>Pending Requests</span><strong><%= metrics.pending_requests %></strong></article>
+    <article class="metric"><span>Approved Requests</span><strong><%= metrics.approved_requests %></strong></article>
+    <article class="metric"><span>Rejected Requests</span><strong><%= metrics.rejected_requests %></strong></article>
+    <article class="metric"><span>Total Posts</span><strong><%= metrics.total_posts %></strong></article>
+    <article class="metric"><span>Active Users (7d)</span><strong><%= metrics.active_users_7d %></strong></article>
+    <article class="metric"><span>Text / Image / Audio</span><strong><%= metrics.text_posts %> / <%= metrics.image_posts %> / <%= metrics.audio_posts %></strong></article>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Access Requests</h2>
+  <p class="muted">Only pending applications are shown here.</p>
+
+  <div class="admin-list">
+    <% accessRequests.forEach((request) => { %>
+      <article class="person-card">
+        <div>
+          <strong><%= request.display_name %></strong>
+          <p class="muted"><%= request.email %></p>
+          <p class="muted">Requested: <%= new Date(request.requested_at).toLocaleString() %> | Status: <%= request.status %></p>
+        </div>
+        <div class="inline-actions">
+          <a href="/admin/requests/<%= request.id %>" class="secondary-btn">View</a>
+          <% if (request.status === 'pending') { %>
+            <form action="/admin/requests/<%= request.id %>/approve" method="POST" class="inline-form">
+              <button type="submit" class="primary-btn">Accept</button>
+            </form>
+            <form action="/admin/requests/<%= request.id %>/reject" method="POST" class="inline-form">
+              <button type="submit" class="danger-btn">Reject</button>
+            </form>
+          <% } %>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Allowed Email IDs</h2>
+  <form action="/admin/allowed-emails" method="POST" class="search-form">
+    <input type="email" name="email" placeholder="name@iima.ac.in" required />
+    <button type="submit" class="primary-btn">Add Email</button>
+  </form>
+
+  <div class="admin-list">
+    <% allowedEmails.forEach((item) => { %>
+      <article class="person-card">
+        <div>
+          <strong><%= item.email %></strong>
+          <p class="muted">Added: <%= new Date(item.created_at).toLocaleString() %></p>
+        </div>
+        <form action="/admin/allowed-emails/<%= item.id %>/delete" method="POST" class="inline-form">
+          <button type="submit" class="danger-btn">Remove</button>
+        </form>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Users</h2>
+  <input type="text" id="adminUserSearch" placeholder="Search users by name/alias/email" value="<%= q %>" />
+  <div id="adminUsersList" class="admin-list">
+    <% users.forEach((user) => { %>
+      <article class="person-card">
+        <div>
+          <strong><%= user.alias || user.display_name %></strong>
+          <p class="muted"><%= user.email %></p>
+          <p class="muted">Last login: <%= new Date(user.last_login_at).toLocaleString() %></p>
+        </div>
+        <form action="/admin/users/<%= user.id %>/delete" method="POST" class="inline-form" onsubmit="return confirm('Remove this user?');">
+          <div class="inline-actions">
+            <a href="/profile/<%= user.share_code %>" class="secondary-btn">View Page</a>
+            <button type="submit" class="danger-btn">Remove User</button>
+          </div>
+        </form>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<script src="/admin.js"></script>
+<%- include('partials/footer') %>

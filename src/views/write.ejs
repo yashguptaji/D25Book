@@ -1,0 +1,18 @@
+<%- include('partials/header', { title: 'Write on Page' }) %>
+
+<section class="card narrow">
+  <h1>Write on <%= target.alias || target.display_name %>'s Page</h1>
+  <p class="muted">You can post text, image, or audio. Video is not allowed.</p>
+
+  <form action="/write/<%= target.share_code %>" method="POST" enctype="multipart/form-data" class="stack-form">
+    <label for="text_content">Message</label>
+    <textarea id="text_content" name="text_content" rows="5" placeholder="Write your memory, wishes, message..."></textarea>
+
+    <label for="media">Attach Image or Audio</label>
+    <input id="media" name="media" type="file" accept="image/*,audio/*" />
+
+    <button type="submit" class="primary-btn">Post</button>
+  </form>
+</section>
+
+<%- include('partials/footer') %>

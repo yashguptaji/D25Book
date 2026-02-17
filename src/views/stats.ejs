@@ -1,0 +1,56 @@
+<%- include('partials/header', { title: 'Statistics' }) %>
+
+<section class="card">
+  <h1>Website Statistics</h1>
+  <div class="stats-grid">
+    <article class="metric"><span>Total Users</span><strong><%= totals.total_users %></strong></article>
+    <article class="metric"><span>Total Posts</span><strong><%= totals.total_entries %></strong></article>
+    <article class="metric"><span>Text</span><strong><%= totals.text_entries %></strong></article>
+    <article class="metric"><span>Images</span><strong><%= totals.image_entries %></strong></article>
+    <article class="metric"><span>Audio</span><strong><%= totals.audio_entries %></strong></article>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Top Pages By Posts</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Posts Received</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% topPages.forEach((row) => { %>
+        <tr>
+          <td><%= row.display_name %></td>
+          <td><%= row.email %></td>
+          <td><%= row.entry_count %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<section class="card">
+  <h2>Recent Activity (Last 14 Days with Posts)</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Date (UTC)</th>
+        <th>Posts</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% recentActivity.forEach((row) => { %>
+        <tr>
+          <td><%= row.day %></td>
+          <td><%= row.count %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('partials/footer') %>

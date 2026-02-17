@@ -1,0 +1,47 @@
+<%- include('partials/header', { title: 'Search People' }) %>
+
+<section class="card">
+  <h1>Find Someone</h1>
+  <p class="muted">Browse everyone in Dorm 25 and jump into their pages.</p>
+  <form action="/people" method="GET" class="search-form">
+    <input type="text" name="q" placeholder="Search by name or email" value="<%= q %>" />
+    <button type="submit" class="primary-btn">Search</button>
+  </form>
+
+  <% if (!people.length) { %>
+    <p class="muted">No users found for "<%= q %>".</p>
+  <% } %>
+
+  <div class="people-list people-parallax">
+    <% people.forEach((person) => { %>
+      <article class="person-card">
+        <div class="person-main">
+          <a href="/profile/<%= person.share_code %>" class="avatar-link" title="Open profile">
+            <img
+              src="<%= person.custom_picture_path ? ('/' + person.custom_picture_path) : (person.picture_url || '/default-avatar.svg') %>"
+              alt="<%= person.alias || person.display_name %>"
+              class="avatar-sm"
+              loading="lazy"
+              onerror="this.onerror=null;this.src='/default-avatar.svg';"
+            />
+          </a>
+          <div>
+            <strong><%= person.alias ? (person.alias + ' aka ' + person.display_name) : person.display_name %></strong>
+            <% if (person.bio) { %>
+              <p class="muted"><%= person.bio %></p>
+            <% } %>
+            <p class="muted"><%= person.email %></p>
+          </div>
+        </div>
+        <div class="inline-actions">
+          <a href="/profile/<%= person.share_code %>" class="secondary-btn">View Profile</a>
+          <a href="/write/<%= person.share_code %>" class="primary-btn">Write on Page</a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<script src="/people.js"></script>
+
+<%- include('partials/footer') %>

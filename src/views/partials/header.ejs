@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | Dorm 25 Scrapbook</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="/home" class="brand">
+        <img src="/dorm25-logo.jpeg" alt="Dorm 25" class="brand-logo" />
+        <span>Dorm 25 Lounge</span>
+      </a>
+      <% if (currentUser) { %>
+        <span class="welcome"><%= displayName %></span>
+      <% } %>
+    </div>
+    <div class="topbar-right">
+      <button id="themeToggle" type="button" class="icon-btn" aria-label="Toggle theme">🌙</button>
+      <% if (currentUser) { %>
+        <a href="/people" class="nav-link">Search People</a>
+        <a href="/stats" class="nav-link">Stats</a>
+        <a href="/profile" class="nav-link">Profile</a>
+        <a href="/tt" class="nav-link">TT</a>
+        <a href="/profile/<%= currentUser.share_code %>" class="avatar-link" title="Open profile">
+          <img
+            src="<%= avatarUrl %>"
+            alt="Your profile"
+            class="avatar-sm"
+            referrerpolicy="no-referrer"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='/default-avatar.svg';"
+          />
+        </a>
+        <form action="/logout" method="POST" class="inline-form">
+          <button type="submit" class="danger-btn">Logout</button>
+        </form>
+      <% } %>
+      <% if (isAdmin) { %>
+        <a href="/tt" class="nav-link">TT</a>
+        <a href="/admin" class="nav-link">Admin</a>
+        <a href="/admin/metrics" class="nav-link">Metrics</a>
+        <form action="/admin/logout" method="POST" class="inline-form">
+          <button type="submit" class="danger-btn">Admin Logout</button>
+        </form>
+      <% } %>
+    </div>
+  </header>
+
+  <main class="container">
+    <% if (error && error.length) { %>
+      <div class="alert alert-error"><%= error[0] %></div>
+    <% } %>
+    <% if (success && success.length) { %>
+      <div class="alert alert-success"><%= success[0] %></div>
+    <% } %>

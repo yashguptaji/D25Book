@@ -1,0 +1,63 @@
+<%- include('partials/header', { title: 'My Page' }) %>
+
+<section class="card">
+  <div class="profile-hero">
+    <img
+      src="<%= avatarUrl %>"
+      alt="<%= displayName %>"
+      class="avatar-lg"
+      referrerpolicy="no-referrer"
+      loading="lazy"
+      onerror="this.onerror=null;this.src='/default-avatar.svg';"
+    />
+    <div>
+      <h1>My Scrapbook Page</h1>
+      <p class="muted">@<%= displayName %></p>
+      <p>Your page content is private. Only you can view all posts on this page.</p>
+    </div>
+  </div>
+
+  <div class="share-block">
+    <div>
+      <p class="label">Share Link (write-only for others):</p>
+      <a href="<%= shareUrl %>" class="share-url"><%= shareUrl %></a>
+    </div>
+    <img src="/qr/<%= currentUser.share_code %>" alt="QR Code" class="qr" />
+  </div>
+</section>
+
+<section class="card">
+  <h2>What People Wrote For You</h2>
+  <% if (!entries.length) { %>
+    <p class="muted">No posts yet.</p>
+  <% } %>
+
+  <div class="entry-list">
+    <% entries.forEach((entry) => { %>
+      <article class="entry">
+        <div class="entry-meta">
+          <strong><a class="name-link" href="/profile/<%= entry.author_share_code %>"><%= entry.author_name %></a></strong>
+          <span><%= new Date(entry.created_at).toLocaleString() %></span>
+          <span class="pill"><%= entry.type %></span>
+        </div>
+
+        <% if (entry.type === 'text') { %>
+          <p class="entry-text"><%= entry.text_content %></p>
+        <% } %>
+
+        <% if (entry.type === 'image') { %>
+          <img src="/<%= entry.file_path %>" alt="Shared image" class="entry-image" />
+        <% } %>
+
+        <% if (entry.type === 'audio') { %>
+          <audio controls class="entry-audio">
+            <source src="/<%= entry.file_path %>" type="<%= entry.mime_type %>" />
+            Your browser does not support audio playback.
+          </audio>
+        <% } %>
+      </article>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

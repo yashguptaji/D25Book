@@ -1,0 +1,116 @@
+<%- include('partials/header', { title: 'Admin Metrics' }) %>
+
+<section class="card">
+  <h1>Dorm 25 Growth Console</h1>
+  <p class="muted">Entrepreneurial dashboard for growth, engagement, retention, and content economics.</p>
+
+  <div class="stats-grid">
+    <article class="metric"><span>Total Users</span><strong><%= core.total_users %></strong></article>
+    <article class="metric"><span>Allowlisted</span><strong><%= core.total_allowed %></strong></article>
+    <article class="metric"><span>Total Posts</span><strong><%= core.total_posts %></strong></article>
+    <article class="metric"><span>Posts / User</span><strong><%= postsPerUser.toFixed(2) %></strong></article>
+    <article class="metric"><span>WAU %</span><strong><%= weeklyActiveRate.toFixed(1) %>%</strong></article>
+    <article class="metric"><span>DAU</span><strong><%= core.users_active_1d %></strong></article>
+    <article class="metric"><span>Allowlist Conversion</span><strong><%= allowlistCoverage.toFixed(1) %>%</strong></article>
+    <article class="metric"><span>Media Mix (Img+Audio)</span><strong><%= core.total_posts ? (((core.total_image + core.total_audio) / core.total_posts) * 100).toFixed(1) : '0.0' %>%</strong></article>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Trendlines</h2>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Daily Posts</h3>
+      <canvas id="postsChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Daily Signups</h3>
+      <canvas id="signupsChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Daily Logins</h3>
+      <canvas id="loginsChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Content Mix</h3>
+      <canvas id="mixChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Leaderboards</h2>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>Top Contributors</h3>
+      <table class="table">
+        <thead><tr><th>Name</th><th>Posts Written</th></tr></thead>
+        <tbody>
+          <% topContributors.forEach((row) => { %>
+            <tr><td><%= row.name %></td><td><%= row.posts_written %></td></tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-card">
+      <h3>Most Loved Pages</h3>
+      <table class="table">
+        <thead><tr><th>Name</th><th>Posts Received</th></tr></thead>
+        <tbody>
+          <% mostLovedPages.forEach((row) => { %>
+            <tr><td><%= row.name %></td><td><%= row.posts_received %></td></tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const dailyPosts = <%- JSON.stringify(dailyPosts) %>;
+  const dailySignups = <%- JSON.stringify(dailySignups) %>;
+  const dailyLogins = <%- JSON.stringify(dailyLogins) %>;
+  const contentMix = <%- JSON.stringify(contentMix) %>;
+
+  function lineChart(id, data, label, color) {
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.map((d) => d.day),
+        datasets: [{
+          label,
+          data: data.map((d) => d.count),
+          borderColor: color,
+          backgroundColor: color + '33',
+          tension: 0.28,
+          fill: true
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
+
+  lineChart('postsChart', dailyPosts, 'Posts', '#d08e53');
+  lineChart('signupsChart', dailySignups, 'Signups', '#7ec58e');
+  lineChart('loginsChart', dailyLogins, 'Logins', '#79a8ff');
+
+  const mixCtx = document.getElementById('mixChart');
+  if (mixCtx) {
+    new Chart(mixCtx, {
+      type: 'doughnut',
+      data: {
+        labels: contentMix.map((x) => x.label),
+        datasets: [{
+          data: contentMix.map((x) => x.value),
+          backgroundColor: ['#d08e53', '#7ec58e', '#79a8ff']
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  }
+</script>
+
+<%- include('partials/footer') %>

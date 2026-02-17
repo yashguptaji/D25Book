@@ -1,0 +1,33 @@
+<%- include('partials/header', { title: 'Scrapbook Showcase' }) %>
+
+<section class="card showcase-shell">
+  <div class="showcase-top">
+    <h1>Scrapbook Showcase</h1>
+    <div class="inline-actions">
+      <button id="nextEntryBtn" class="secondary-btn" type="button">Next</button>
+      <button id="skipToCollageBtn" class="danger-btn" type="button">Skip to Collage</button>
+    </div>
+  </div>
+  <p id="showcaseProgress" class="muted"></p>
+
+  <div id="showcaseStage" class="showcase-stage"></div>
+</section>
+
+<section id="collageSection" class="card collage-section" hidden>
+  <div class="showcase-top">
+    <h2>Your Scrapbook Collage</h2>
+    <div class="inline-actions">
+      <a id="downloadCollageBtn" class="primary-btn" download="d25-scrapbook-collage.png">Download Collage</a>
+      <button id="restartShowcaseBtn" class="secondary-btn" type="button">Replay Showcase</button>
+    </div>
+  </div>
+  <p class="muted">Generated from your current posts.</p>
+  <img id="collagePreview" class="collage-preview" alt="Generated scrapbook collage" />
+</section>
+
+<script>
+  window.__SHOWCASE_ENTRIES = <%- JSON.stringify(entries) %>;
+</script>
+<script src="/profile-showcase.js"></script>
+
+<%- include('partials/footer') %>
