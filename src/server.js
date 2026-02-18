@@ -246,7 +246,13 @@ app.post('/admin/logout', (req, res) => {
   req.flash('success', 'Logged out.');
   return res.redirect('/');
 });
-
+app.get('/admin/logout', (req, res) => {
+  if (req.session) {
+    req.session.isAdmin = false;
+  }
+  req.flash('success', 'Logged out.');
+  return res.redirect('/');
+});
 app.get('/auth/google', (req, res, next) => {
   if (!googleClientId || !googleClientSecret) {
     req.flash('error', 'Google OAuth is not configured on this server.');
